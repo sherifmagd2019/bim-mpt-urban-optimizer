@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!--
+      Revit 2025+ runs on .NET 8; Revit 2022-2024 run on .NET Framework 4.8.
+      Set RevitVersion below and switch TargetFramework accordingly.
+    -->
+    <RevitVersion>2026</RevitVersion>
+    <TargetFramework Condition="'$(RevitVersion)'&gt;='2026'">net8.0-windows</TargetFramework>
+    <TargetFramework Condition="'$(RevitVersion)'&lt;'2026'">net48</TargetFramework>
+
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>RevitMPTOptimizer</AssemblyName>
+    <RootNamespace>RevitMPTOptimizer</RootNamespace>
+
+    <!-- Don't copy Revit's own assemblies into our output folder -->
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+  </PropertyGroup>
+
+  <!--
+    Point this at your local Revit installation. Defaults to the standard
+    Program Files location for the selected RevitVersion; override with
+    an environment variable or edit directly if your install path differs.
+  -->
+  <PropertyGroup>
+    <RevitInstallDir Condition="'$(RevitInstallDir)'==''">C:\Program Files\Autodesk\Revit $(RevitVersion)</RevitInstallDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<EnableDefaultPageItems>false</EnableDefaultPageItems>
+  </PropertyGroup>	
+
+  <ItemGroup>
+    <Reference Include="RevitAPI">
+      <HintPath>$(RevitInstallDir)\RevitAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>$(RevitInstallDir)\RevitAPIUI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="src\**\*.cs" />
+    <Page Include="src\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+  </ItemGroup>
+
+  <!-- Copy the .addin manifest and icon next to the build output for easy local testing -->
+  <ItemGroup>
+    <None Include="RevitMPTOptimizer.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\icon32.png" Condition="Exists('Resources\icon32.png')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autodesk.Revit.SDK" Version="2026.0.0.9999" />
+  </ItemGroup>
+
+</Project>

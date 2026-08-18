@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Generative BIM Portfolio Optimizer</Name>
+    <Assembly>./RevitMPTOptimizer.dll</Assembly>
+    <AddInId>7C2E4F1A-9B3D-4E6C-8A1F-2D5C6B7E9F10</AddInId>
+    <FullClassName>RevitMPTOptimizer.App</FullClassName>
+    <VendorId>SAM</VendorId>
+    <VendorDescription>Sherif Ahmad Magdaldin — ICICPE 2026</VendorDescription>
+  </AddIn>
+</RevitAddIns>

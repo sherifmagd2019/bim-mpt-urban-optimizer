@@ -1,0 +1,196 @@
+{
+  "version": 4,
+  "targets": {
+    "net8.0-windows": {
+      "Autodesk.Revit.SDK/2026.0.0.9999": {
+        "type": "package",
+        "compile": {
+          "ref/net8.0/AdWindows.dll": {},
+          "ref/net8.0/RevitAPI.dll": {
+            "related": ".xml"
+          },
+          "ref/net8.0/RevitAPIBrowserUtils.dll": {},
+          "ref/net8.0/RevitAPIFoundation.dll": {},
+          "ref/net8.0/RevitAPIIFC.dll": {
+            "related": ".xml"
+          },
+          "ref/net8.0/RevitAPILink.dll": {},
+          "ref/net8.0/RevitAPIMacros.dll": {
+            "related": ".xml"
+          },
+          "ref/net8.0/RevitAPIMacrosInterop.dll": {},
+          "ref/net8.0/RevitAPIMacrosInteropAPI.dll": {},
+          "ref/net8.0/RevitAPISteel.dll": {},
+          "ref/net8.0/RevitAPIUI.dll": {
+            "related": ".xml"
+          },
+          "ref/net8.0/RevitAPIUILink.dll": {},
+          "ref/net8.0/RevitAPIUIMacros.dll": {
+            "related": ".xml"
+          },
+          "ref/net8.0/RevitAPIUIMacrosInterop.dll": {},
+          "ref/net8.0/RevitAPIUIMacrosInteropAPI.dll": {},
+          "ref/net8.0/RevitAddInUtility.dll": {
+            "related": ".xml"
+          },
+          "ref/net8.0/RevitDB.dll": {},
+          "ref/net8.0/RevitDBAPI.dll": {},
+          "ref/net8.0/RevitDBCore.dll": {},
+          "ref/net8.0/RevitDBCoreAPI.dll": {},
+          "ref/net8.0/RevitMFC.dll": {},
+          "ref/net8.0/RevitMFCAPI.dll": {},
+          "ref/net8.0/RevitMaterialUI3.dll": {},
+          "ref/net8.0/RevitNET.dll": {},
+          "ref/net8.0/RevitUI.dll": {},
+          "ref/net8.0/RevitUIAPI.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Autodesk.Revit.SDK/2026.0.0.9999": {
+      "sha512": "UqiJAkhOGDuJbjN9s5zKlo5VMEEfyKScdEGw/v6PSeqeePbb+R45sAp+gZkysIbowAURd7X1LHAMKchkZeEozw==",
+      "type": "package",
+      "path": "autodesk.revit.sdk/2026.0.0.9999",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "Revit.png",
+        "autodesk.revit.sdk.2026.0.0.9999.nupkg.sha512",
+        "autodesk.revit.sdk.nuspec",
+        "ref/net8.0/AdWindows.dll",
+        "ref/net8.0/RevitAPI.dll",
+        "ref/net8.0/RevitAPI.xml",
+        "ref/net8.0/RevitAPIBrowserUtils.dll",
+        "ref/net8.0/RevitAPIFoundation.dll",
+        "ref/net8.0/RevitAPIIFC.dll",
+        "ref/net8.0/RevitAPIIFC.xml",
+        "ref/net8.0/RevitAPILink.dll",
+        "ref/net8.0/RevitAPIMacros.dll",
+        "ref/net8.0/RevitAPIMacros.xml",
+        "ref/net8.0/RevitAPIMacrosInterop.dll",
+        "ref/net8.0/RevitAPIMacrosInteropAPI.dll",
+        "ref/net8.0/RevitAPISteel.dll",
+        "ref/net8.0/RevitAPIUI.dll",
+        "ref/net8.0/RevitAPIUI.xml",
+        "ref/net8.0/RevitAPIUILink.dll",
+        "ref/net8.0/RevitAPIUIMacros.dll",
+        "ref/net8.0/RevitAPIUIMacros.xml",
+        "ref/net8.0/RevitAPIUIMacrosInterop.dll",
+        "ref/net8.0/RevitAPIUIMacrosInteropAPI.dll",
+        "ref/net8.0/RevitAddInUtility.dll",
+        "ref/net8.0/RevitAddInUtility.xml",
+        "ref/net8.0/RevitDB.dll",
+        "ref/net8.0/RevitDBAPI.dll",
+        "ref/net8.0/RevitDBCore.dll",
+        "ref/net8.0/RevitDBCoreAPI.dll",
+        "ref/net8.0/RevitMFC.dll",
+        "ref/net8.0/RevitMFCAPI.dll",
+        "ref/net8.0/RevitMaterialUI3.dll",
+        "ref/net8.0/RevitNET.dll",
+        "ref/net8.0/RevitUI.dll",
+        "ref/net8.0/RevitUIAPI.dll"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0-windows": [
+      "Autodesk.Revit.SDK >= 2026.0.0.9999"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Sherif\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "J:\\WorldQuant  FM\\PAPAER\\CSharp Application\\RevitMPTOptimizer\\RevitMPTOptimizer.csproj",
+      "projectName": "RevitMPTOptimizer",
+      "projectPath": "J:\\WorldQuant  FM\\PAPAER\\CSharp Application\\RevitMPTOptimizer\\RevitMPTOptimizer.csproj",
+      "packagesPath": "C:\\Users\\Sherif\\.nuget\\packages\\",
+      "outputPath": "J:\\WorldQuant  FM\\PAPAER\\CSharp Application\\RevitMPTOptimizer\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\Sherif\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0-windows"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0-windows": {
+          "framework": "net8.0-windows7.0",
+          "targetAlias": "net8.0-windows",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "10.0.400"
+    },
+    "frameworks": {
+      "net8.0-windows": {
+        "framework": "net8.0-windows7.0",
+        "targetAlias": "net8.0-windows",
+        "dependencies": {
+          "Autodesk.Revit.SDK": {
+            "target": "Package",
+            "version": "[2026.0.0.9999, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.30, 8.0.30]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.30, 8.0.30]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.30, 8.0.30]"
+          }
+        ],
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WPF": {
+            "privateAssets": "none"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

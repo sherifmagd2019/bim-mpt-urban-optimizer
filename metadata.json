@@ -1,0 +1,6 @@
+{
+  "name": "BIM MPT Urban Optimizer AI Agent",
+  "description": "An autonomous AI Agent and quantitative engine applying Modern Portfolio Theory (MPT) for financial risk-return optimization in generative urban BIM layouts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
