@@ -1,3 +1,14 @@
+## 🚀 Quick Links
+
+- **Live Demo:** https://mptoptimizer.ai.studio/
+- **Devpost Submission:** https://devpost.com/software/bim-mpt-urban-optimize
+- **Video Demo:** https://www.youtube.com/watch?v=tMj42CEgfiA
+- **Cloud Deployment:** See [DEPLOYMENT.md](./DEPLOYMENT.md)
+- **Architecture Details:** See [ARCHITECTURE.md](./ARCHITECTURE.md)
+
+---
+
+
 # BIM MPT Urban Optimizer AI Agent 🏢📊🤖
 
 An autonomous, full-stack spatial-financial engineering co-pilot that applies **Harry Markowitz's Modern Portfolio Theory (MPT)** to Building Information Modeling (BIM) workflows. The platform maps spatial programmatic asset allocations to optimized financial yield boundaries, streaming results asynchronously directly into **Autodesk Revit 2027**.
