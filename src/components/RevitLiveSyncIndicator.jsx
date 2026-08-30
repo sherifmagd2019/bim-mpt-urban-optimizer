@@ -33,22 +33,22 @@ export const RevitLiveSyncIndicator = ({
     switch (syncState?.status) {
       case 'connected':
         return {
-          bg: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20',
+          bg: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/25 shadow-emerald-500/10 shadow-sm',
           dot: 'bg-emerald-400 animate-pulse',
           icon: Wifi,
           iconColor: 'text-emerald-400',
-          label: 'Revit 2027 Connected',
+          label: syncState.connectionMode === 'direct' ? 'Revit 2027 Connected (Port 8080)' : 'Revit 2027 Connected (Live Relay)',
           shortLabel: 'Connected'
         };
       case 'syncing':
       case 'checking':
         return {
-          bg: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30 hover:bg-cyan-500/20',
+          bg: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/25',
           dot: 'bg-cyan-400 animate-ping',
           icon: RefreshCw,
           iconColor: 'text-cyan-400 animate-spin',
-          label: 'Revit Bridge Polling...',
-          shortLabel: 'Polling'
+          label: 'Revit Bridge Syncing...',
+          shortLabel: 'Syncing'
         };
       case 'disconnected':
       default:

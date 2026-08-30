@@ -9,11 +9,14 @@ import {
   ShieldCheck, 
   FileSpreadsheet,
   Download,
+  FileText,
+  BookOpen,
   Undo2,
   Redo2
 } from 'lucide-react';
 import { RevitLiveSyncIndicator } from './RevitLiveSyncIndicator';
 import { PAPER_TABLE_1_PRESETS } from '../lib/mptMath';
+import { generateAndDownloadPaperPDF } from '../lib/pdfGenerator';
 
 export const Header = ({
   currentScenario,
@@ -21,6 +24,7 @@ export const Header = ({
   onOpenRevitCode,
   onOpenScenarioComparison,
   onOpenCsvExport,
+  onOpenPaperModal,
   activeViewTab,
   setActiveViewTab,
   revitSyncState,
@@ -34,15 +38,49 @@ export const Header = ({
   return (
     <header className="sleek-glass border-b border-slate-800/80 text-slate-100 sticky top-0 z-30 shadow-2xl backdrop-blur-xl">
       {/* Top Banner with Paper Attribution and Live Sync Status */}
-      <div className="bg-slate-950/70 px-4 lg:px-8 py-1.5 border-b border-slate-800/60 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
-        <div className="flex items-center space-x-2">
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-950/80 text-indigo-300 border border-indigo-800/50">
-            ICICPE 2026 Research Core
+      <div className="bg-slate-950/90 px-4 lg:px-8 py-2 border-b border-indigo-500/20 flex flex-wrap items-center justify-between text-xs text-slate-300 gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          {/* Glowing ICEPE 2026 Recognition Badge */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white shadow-lg shadow-purple-500/30 border border-indigo-300/50 animate-pulse">
+            <Sparkles className="h-3.5 w-3.5 text-amber-300 animate-spin-slow" />
+            <span>ICEPE 2026</span>
+          </div>
+
+          <span className="text-slate-600 hidden sm:inline">•</span>
+
+          {/* Research Paper Name with Clickable Reader Modal */}
+          <button
+            id="top-banner-paper-link"
+            onClick={onOpenPaperModal}
+            className="text-slate-200 text-xs font-semibold flex items-center gap-1.5 hover:text-indigo-300 transition-colors cursor-pointer text-left group"
+            title="Click to view ICEPE 2026 paper abstract, equations & benchmarks"
+          >
+            <span className="text-slate-400 font-normal">Paper:</span>
+            <span className="text-white font-bold underline decoration-indigo-500/60 decoration-2 underline-offset-2 group-hover:decoration-indigo-400">
+              Modern Portfolio Theory in Generative Urban BIM Layouts
+            </span>
+          </button>
+
+          <span className="text-slate-600 hidden md:inline">•</span>
+
+          {/* Author Name */}
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/40 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            Sherif Ahmad Magdaldin
           </span>
-          <span className="hidden sm:inline text-slate-600">•</span>
-          <span className="truncate text-slate-300 text-[11px]">
-            <strong className="text-white font-medium">Modern Portfolio Theory in Generative Urban BIM Layouts</strong> — Sherif Ahmad Magdaldin
-          </span>
+
+          {/* Direct Download Paper PDF Button */}
+          <button
+            id="top-banner-btn-download-pdf"
+            onClick={() => {
+              generateAndDownloadPaperPDF();
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white border border-indigo-400/50 shadow-md shadow-indigo-600/30 transition-all cursor-pointer hover:scale-105 active:scale-95"
+            title="Download full 3-page peer-reviewed research paper PDF with ICEPE 2026 info"
+          >
+            <Download className="h-3.5 w-3.5 text-amber-300" />
+            <span>Download Paper PDF</span>
+          </button>
         </div>
         <div className="flex items-center space-x-3">
           {/* Header Undo / Redo controls */}
@@ -105,7 +143,7 @@ export const Header = ({
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Generative Parametric BIM × Markowitz Mean-Variance Asset Engineering
+              Generative Parametric BIM × Markowitz Asset Engineering
             </p>
           </div>
         </div>

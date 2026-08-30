@@ -56,15 +56,18 @@ export const AiAgentPanel = ({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-xs font-bold text-white tracking-wider uppercase">
-                BIM Quant AI Agent Co-Pilot
+                ICEPE 2026 AI Co-Pilot
               </h3>
+              <span className="text-[10px] font-semibold text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                Sherif Ahmad Magdaldin
+              </span>
               <span className="badge badge-online flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 Active
               </span>
             </div>
             <p className="text-[11px] text-slate-400">
-              Autonomous architectural financial engineering co-pilot (Pure JavaScript Runtime)
+              Modern Portfolio Theory in Generative Urban BIM Layouts (Pure JavaScript Runtime)
             </p>
           </div>
         </div>

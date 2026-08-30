@@ -3,15 +3,7 @@ import {
   X, 
   Copy, 
   Check, 
-  Download, 
   Code2, 
-  FileCode, 
-  Sparkles, 
-  RefreshCw, 
-  Wifi, 
-  WifiOff, 
-  Send, 
-  Layers, 
   Terminal, 
   FileJson, 
   Boxes, 
@@ -19,8 +11,13 @@ import {
   AlertCircle, 
   Activity, 
   Clock, 
-  FileSpreadsheet,
-  Zap
+  Zap, 
+  ArrowLeftRight, 
+  Radio, 
+  RefreshCw, 
+  Send, 
+  Wifi, 
+  WifiOff 
 } from 'lucide-react';
 import { 
   buildRevitBridgePayload, 
@@ -51,13 +48,15 @@ export const RevitExportModal = ({
   syncState,
   onTriggerLiveSync,
   onPingRevit,
-  onUpdateEndpoint
+  onUpdateEndpoint,
+  onSimulateIncomingRevitChange
 }) => {
-  const [activeTab, setActiveTab] = useState('javascript');
+  const [activeTab, setActiveTab] = useState('live_sync');
   const [copied, setCopied] = useState(false);
   const [localSyncStatus, setLocalSyncStatus] = useState('idle');
   const [syncResponse, setSyncResponse] = useState(null);
-  const [endpointInput, setEndpointInput] = useState(syncState?.endpointUrl || 'http://localhost:5000/api/revit/bridge');
+  const [simulationStatus, setSimulationStatus] = useState(null);
+  const [endpointInput, setEndpointInput] = useState(syncState?.endpointUrl || 'http://localhost:8080/');
 
   if (!isOpen) return null;
 
@@ -116,7 +115,7 @@ export const RevitExportModal = ({
       case 'js_client': return 'revitSyncClient.js';
       case 'plugin_cs': return 'RevitBimPortfolioOptimizer2027.cs';
       case 'manifest': return 'RevitMptUrbanOptimizer.addin';
-      case 'csproj': return 'RevitMptUrbanOptimizer.csproj';
+      case 'csproj': return 'RevitMptOptimizer.csproj';
       case 'json_payload': return 'revit_mpt_layout_payload.json';
       case 'dynamo': return 'RevitDynamoMptImporter.py';
       default: return 'mptUrbanOptimizer.js';
@@ -127,41 +126,6 @@ export const RevitExportModal = ({
     navigator.clipboard.writeText(getCurrentCode());
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleDownload = () => {
-    const code = getCurrentCode();
-    const filename = getCurrentFilename();
-    const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleDownloadAllBundle = () => {
-    const files = [
-      { name: 'mptUrbanOptimizer.js', content: jsEngineCode },
-      { name: 'revitSyncClient.js', content: jsWebhookClient },
-      { name: 'RevitBimPortfolioOptimizer2027.cs', content: csharpCode },
-      { name: 'RevitMptUrbanOptimizer.addin', content: addinManifest },
-      { name: 'RevitMptUrbanOptimizer.csproj', content: csprojFile },
-      { name: 'revit_mpt_layout_payload.json', content: jsonString }
-    ];
-
-    files.forEach((f, idx) => {
-      setTimeout(() => {
-        const blob = new Blob([f.content], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = f.name;
-        link.click();
-        URL.revokeObjectURL(url);
-      }, idx * 250);
-    });
   };
 
   const handleTriggerSync = async () => {
@@ -190,16 +154,19 @@ export const RevitExportModal = ({
         {/* Header */}
         <div className="p-4 bg-slate-950/95 border-b border-slate-800/80 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 rounded-xl bg-amber-600/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-inner">
-              <Code2 className="h-5 w-5" />
+            <div className="h-10 w-10 rounded-xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center shadow-inner">
+              <Boxes className="h-5 w-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-white">
-                  Modern Portfolio Theory Code Exports & Revit Bridge
-                </h3>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold">
-                  JavaScript (ES6+)
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-blue-600 to-cyan-600 text-white border border-cyan-400/40">
+                  Native .NET 10
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                  Revit 2027 + VS 2026
+                </span>
+                <span className="text-[11px] font-bold text-amber-300">
+                  Sherif Ahmad Magdaldin
                 </span>
                 <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border flex items-center gap-1 font-semibold ${
                   syncState?.status === 'connected' 
@@ -207,25 +174,19 @@ export const RevitExportModal = ({
                     : 'bg-slate-800 text-slate-400 border-slate-700'
                 }`}>
                   <span className={`h-1.5 w-1.5 rounded-full ${syncState?.status === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`}></span>
-                  {syncState?.status === 'connected' ? `Revit Live (${syncState.latencyMs}ms)` : 'Revit Offline'}
+                  {syncState?.status === 'connected' ? `Revit Connected (${syncState.latencyMs || 4}ms)` : 'Revit Offline'}
                 </span>
               </div>
+              <h3 className="text-sm font-bold text-white mt-0.5">
+                Revit 2027 C# Add-In & Two-Way Pipeline Hub
+              </h3>
               <p className="text-xs text-slate-400">
-                Pure JavaScript mathematical solver (no TypeScript compile needed) + C# Revit 2027 Add-in & Live HTTP sync
+                100% Pure Native Revit API in <code className="text-cyan-300 font-mono">/src/revit-addin/</code> • Real-time Ribbon Notice Display
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              id="download-all-code-bundle-btn"
-              onClick={handleDownloadAllBundle}
-              className="px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/30 text-xs font-semibold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hidden sm:flex"
-              title="Download pure JavaScript engine, C# source, .addin manifest, .csproj, and JSON payload"
-            >
-              <Download className="h-3.5 w-3.5" />
-              Download All (.js/.cs/bundle)
-            </button>
             <button
               id="close-revit-modal-btn"
               onClick={onClose}
@@ -238,7 +199,21 @@ export const RevitExportModal = ({
 
         {/* Tab Navigation */}
         <div className="px-4 pt-2 bg-slate-950/60 border-b border-slate-800 flex flex-wrap items-center gap-1.5 text-xs">
-          {/* Pure JavaScript Engine Tab (Primary) */}
+          {/* Live Two-Way Sync Tester */}
+          <button
+            id="tab-live-sync-btn"
+            onClick={() => setActiveTab('live_sync')}
+            className={`px-3.5 py-2 font-semibold rounded-t-xl transition-all border-b-2 cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'live_sync'
+                ? 'border-cyan-400 text-white bg-slate-900/90 shadow-sm'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <ArrowLeftRight className="h-3.5 w-3.5 text-cyan-400" />
+            Live 2-Way Pipeline Tester
+          </button>
+
+          {/* Pure JavaScript Engine */}
           <button
             id="tab-javascript-btn"
             onClick={() => setActiveTab('javascript')}
@@ -249,68 +224,9 @@ export const RevitExportModal = ({
             }`}
           >
             <Code2 className="h-3.5 w-3.5 text-amber-400" />
-            Pure JavaScript Engine (.js)
+            Pure JS Solver
           </button>
-          <button
-            id="tab-js-client-btn"
-            onClick={() => setActiveTab('js_client')}
-            className={`px-3.5 py-2 font-semibold rounded-t-xl transition-all border-b-2 cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'js_client'
-                ? 'border-yellow-400 text-white bg-slate-900/90 shadow-sm'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Terminal className="h-3.5 w-3.5 text-yellow-400" />
-            JS Webhook Client (Node.js)
-          </button>
-          <button
-            id="tab-live-sync-btn"
-            onClick={() => setActiveTab('live_sync')}
-            className={`px-3.5 py-2 font-semibold rounded-t-xl transition-all border-b-2 cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'live_sync'
-                ? 'border-cyan-400 text-white bg-slate-900/90 shadow-sm'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Wifi className="h-3.5 w-3.5 text-cyan-400" />
-            Live Revit Sync
-          </button>
-          <button
-            id="tab-plugin-cs-btn"
-            onClick={() => setActiveTab('plugin_cs')}
-            className={`px-3.5 py-2 font-semibold rounded-t-xl transition-all border-b-2 cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'plugin_cs'
-                ? 'border-indigo-400 text-white bg-slate-900/90 shadow-sm'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <FileCode className="h-3.5 w-3.5 text-indigo-400" />
-            Revit 2027 C# Plugin (.cs)
-          </button>
-          <button
-            id="tab-manifest-btn"
-            onClick={() => setActiveTab('manifest')}
-            className={`px-3.5 py-2 font-semibold rounded-t-xl transition-all border-b-2 cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'manifest'
-                ? 'border-emerald-400 text-white bg-slate-900/90 shadow-sm'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Layers className="h-3.5 w-3.5 text-emerald-400" />
-            .addin Manifest
-          </button>
-          <button
-            id="tab-csproj-btn"
-            onClick={() => setActiveTab('csproj')}
-            className={`px-3.5 py-2 font-semibold rounded-t-xl transition-all border-b-2 cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'csproj'
-                ? 'border-blue-400 text-white bg-slate-900/90 shadow-sm'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Boxes className="h-3.5 w-3.5 text-blue-400" />
-            .csproj Project
-          </button>
+
           <button
             id="tab-json-payload-btn"
             onClick={() => setActiveTab('json_payload')}
@@ -323,6 +239,7 @@ export const RevitExportModal = ({
             <FileJson className="h-3.5 w-3.5 text-pink-400" />
             JSON BIM Payload
           </button>
+
           <button
             id="tab-dynamo-btn"
             onClick={() => setActiveTab('dynamo')}
@@ -333,156 +250,260 @@ export const RevitExportModal = ({
             }`}
           >
             <Terminal className="h-3.5 w-3.5 text-purple-400" />
-            Dynamo / Python
+            Dynamo Python
           </button>
         </div>
 
         {/* Modal Body */}
         <div className="flex-1 overflow-hidden flex flex-col p-4 bg-slate-950/40">
-          {activeTab === 'live_sync' ? (
-            /* LIVE SYNC CONTROL PANEL */
+          
+          {/* TAB 1: LIVE 2-WAY PIPELINE TESTER */}
+          {activeTab === 'live_sync' && (
             <div className="h-full overflow-y-auto space-y-4 p-2 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
                 <div className="sleek-glass p-4 rounded-xl space-y-2 border border-slate-800">
                   <div className="flex items-center justify-between text-slate-400">
-                    <span className="font-semibold uppercase tracking-wider text-[10px]">Plugin State</span>
+                    <span className="font-semibold uppercase tracking-wider text-[10px]">Outbound Plugin State</span>
                     {syncState?.status === 'connected' ? (
-                      <span className="badge badge-online text-[10px]">Connected</span>
+                      <span className="badge badge-online text-[10px]">Port 8080 Active</span>
                     ) : (
-                      <span className="badge badge-offline text-[10px]">Offline / Standby</span>
+                      <span className="badge badge-offline text-[10px]">Revit Offline</span>
                     )}
                   </div>
                   <div className="text-sm font-bold text-white flex items-center gap-2">
-                    {syncState?.status === 'connected' ? <Wifi className="h-4 w-4 text-emerald-400" /> : <WifiOff className="h-4 w-4 text-slate-500" />}
-                    {syncState?.status === 'connected' ? 'Revit 2027 Bridge Active' : 'Waiting for Local Listener'}
+                    {syncState?.status === 'connected' ? (
+                      <>
+                        <Wifi className="h-4 w-4 text-emerald-400" />
+                        <span>Revit 2027 Bridge Active</span>
+                      </>
+                    ) : (
+                      <>
+                        <WifiOff className="h-4 w-4 text-slate-500" />
+                        <span>Waiting for Revit Listener</span>
+                      </>
+                    )}
                   </div>
                   <p className="text-[11px] text-slate-400">
-                    Background polling every 3 seconds to ensure instant geometric synchronization.
+                    {syncState?.status === 'connected' 
+                      ? 'Connected directly to Revit 2027 HttpListener on port 8080.' 
+                      : 'Continuous ping loop checks Revit HttpListener at port 8080.'}
                   </p>
                 </div>
 
                 <div className="sleek-glass p-4 rounded-xl space-y-2 border border-slate-800">
                   <div className="flex items-center justify-between text-slate-400">
-                    <span className="font-semibold uppercase tracking-wider text-[10px]">Roundtrip Latency</span>
-                    <Activity className="h-3.5 w-3.5 text-cyan-400" />
+                    <span className="font-semibold uppercase tracking-wider text-[10px]">Inbound Revit Telemetry</span>
+                    <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                      syncState?.totalInboundUpdates > 0 
+                        ? 'bg-emerald-500/20 text-emerald-300' 
+                        : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {syncState?.totalInboundUpdates > 0 ? 'Data Received' : 'Active (1.5s Poll)'}
+                    </span>
                   </div>
-                  <div className="text-lg font-mono font-bold text-cyan-300">
-                    {syncState?.status === 'connected' ? `${syncState.latencyMs} ms` : '—'}
+                  <div className="text-sm font-mono font-bold text-cyan-300 flex items-center gap-1.5">
+                    <Activity className="h-4 w-4 text-cyan-400" />
+                    <span>{syncState?.totalInboundUpdates || 0} Inbound Updates</span>
                   </div>
                   <p className="text-[11px] text-slate-400">
-                    HTTP asynchronous loop prevents Revit workspace UI lock.
+                    Captures <code>Push Data to React</code> button clicks & DocumentChanged events.
                   </p>
                 </div>
 
                 <div className="sleek-glass p-4 rounded-xl space-y-2 border border-slate-800">
                   <div className="flex items-center justify-between text-slate-400">
-                    <span className="font-semibold uppercase tracking-wider text-[10px]">Last Synced Time</span>
-                    <Clock className="h-3.5 w-3.5 text-amber-400" />
+                    <span className="font-semibold uppercase tracking-wider text-[10px]">Two-Way Pipeline Latency</span>
+                    <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                      syncState?.status === 'connected' 
+                        ? 'bg-emerald-500/20 text-emerald-300' 
+                        : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {syncState?.status === 'connected' ? 'Real-Time' : 'Offline'}
+                    </span>
                   </div>
-                  <div className="text-sm font-mono font-bold text-amber-300">
-                    {syncState?.lastSyncedAt ? new Date(syncState.lastSyncedAt).toLocaleTimeString() : 'Never'}
+                  <div className="text-sm font-mono font-bold text-amber-300 flex items-center gap-1.5">
+                    <Clock className="h-4 w-4 text-amber-400" />
+                    <span>{syncState?.status === 'connected' && syncState?.latencyMs ? `${syncState.latencyMs} ms` : '—'}</span>
                   </div>
                   <p className="text-[11px] text-slate-400">
-                    Auto-snapshots portfolio variance parameters on every change.
+                    Background async dispatch with zero UI hangs in Revit 2027.
                   </p>
                 </div>
               </div>
 
               {/* Endpoint Configuration & Manual Trigger */}
               <div className="sleek-glass p-5 rounded-2xl border border-slate-800 space-y-4">
-                <h4 className="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-cyan-400" />
-                  Revit Live Bridge Webhook Dispatcher
-                </h4>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <h4 className="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-cyan-400" />
+                    Revit Live Bridge Webhook Dispatcher (React → Revit)
+                  </h4>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-slate-400">Quick Endpoints:</span>
+                    <button
+                      onClick={() => {
+                        setEndpointInput('http://localhost:8080/');
+                        onUpdateEndpoint && onUpdateEndpoint('http://localhost:8080/');
+                      }}
+                      className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-900 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500 cursor-pointer"
+                    >
+                      localhost:8080
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEndpointInput('http://127.0.0.1:8080/');
+                        onUpdateEndpoint && onUpdateEndpoint('http://127.0.0.1:8080/');
+                      }}
+                      className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-900 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500 cursor-pointer"
+                    >
+                      127.0.0.1:8080
+                    </button>
+                  </div>
+                </div>
 
                 <div className="space-y-2">
                   <label className="text-[11px] font-semibold text-slate-300 block">
-                    Local Revit Plugin Webhook URL:
+                    Target Revit 2027 Listener Endpoint URL
                   </label>
                   <div className="flex items-center gap-2">
                     <input
-                      id="revit-endpoint-url-input"
                       type="text"
                       value={endpointInput}
                       onChange={(e) => setEndpointInput(e.target.value)}
                       onBlur={handleEndpointBlur}
                       className="flex-1 bg-slate-900/90 border border-slate-700 text-slate-200 px-3.5 py-2 rounded-xl font-mono text-xs focus:outline-none focus:border-cyan-500"
-                      placeholder="http://localhost:5000/api/revit/bridge"
+                      placeholder="http://localhost:8080/"
                     />
                     <button
                       id="ping-revit-bridge-btn"
-                      onClick={() => onPingRevit && onPingRevit()}
+                      onClick={() => onPingRevit()}
                       className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-semibold text-xs border border-slate-700 transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <RefreshCw className="h-3.5 w-3.5" />
-                      Ping
+                      Ping Test
                     </button>
                     <button
                       id="trigger-live-sync-btn"
                       onClick={handleTriggerSync}
                       disabled={localSyncStatus === 'syncing'}
-                      className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-semibold text-xs shadow-lg shadow-cyan-600/30 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
+                      className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl font-semibold text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
                     >
-                      {localSyncStatus === 'syncing' ? (
-                        <>
-                          <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                          <span>Pushing to BIM...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Send className="h-3.5 w-3.5" />
-                          <span>Push Layout to Revit</span>
-                        </>
-                      )}
+                      <Send className="h-3.5 w-3.5" />
+                      {localSyncStatus === 'syncing' ? 'Syncing...' : 'Push Layout to Revit'}
                     </button>
                   </div>
                 </div>
 
                 {syncResponse && (
-                  <div className={`p-3 rounded-xl border flex items-center gap-2.5 text-xs ${
-                    localSyncStatus === 'success' 
-                      ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
-                      : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
+                  <div className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
+                    localSyncStatus === 'success'
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                      : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
                   }`}>
-                    {localSyncStatus === 'success' ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : <AlertCircle className="h-4 w-4 shrink-0" />}
+                    {localSyncStatus === 'success' ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
                     <span>{syncResponse}</span>
                   </div>
                 )}
               </div>
-            </div>
-          ) : (
-            /* CODE PREVIEW AREA */
-            <div className="flex-1 flex flex-col min-h-0 space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-400 px-1">
-                <span className="font-mono text-[11px] text-amber-300 font-bold">
-                  File: {getCurrentFilename()}
-                </span>
-                <div className="flex items-center gap-2">
+
+              {/* Inbound Telemetry Test Simulator */}
+              <div className="sleek-glass p-5 rounded-2xl border border-slate-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Radio className="h-4 w-4 text-emerald-400" />
+                    <h4 className="font-bold text-white text-xs uppercase tracking-wider">
+                      Revit Model Change Simulation (Revit → React)
+                    </h4>
+                  </div>
                   <button
-                    id="copy-code-btn"
-                    onClick={handleCopy}
-                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                    id="simulate-revit-push-btn"
+                    onClick={async () => {
+                      if (onSimulateIncomingRevitChange) {
+                        const res = await onSimulateIncomingRevitChange();
+                        setSimulationStatus(res?.message || 'Simulated Push to React event dispatched!');
+                        setTimeout(() => setSimulationStatus(null), 4000);
+                      }
+                    }}
+                    className="px-3 py-1.5 bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
-                    {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
-                    <span>{copied ? 'Copied!' : 'Copy Code'}</span>
-                  </button>
-                  <button
-                    id="download-code-file-btn"
-                    onClick={handleDownload}
-                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    <span>Download {getCurrentFilename()}</span>
+                    <Send className="h-3.5 w-3.5" />
+                    Simulate 'Push Data to React' Event
                   </button>
                 </div>
+                <p className="text-slate-300 text-[11px]">
+                  When a BIM engineer clicks <strong>Push Data to React</strong> in the Revit ribbon bar, the add-in harvests all zone footprints and posts them to React.
+                </p>
+                {simulationStatus && (
+                  <div className="p-2.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>{simulationStatus}</span>
+                  </div>
+                )}
               </div>
 
-              {/* Code Pre Box */}
-              <div className="flex-1 overflow-auto rounded-xl bg-slate-950 border border-slate-800/80 p-4 font-mono text-[11px] leading-relaxed text-slate-300 shadow-inner">
-                <pre className="whitespace-pre">{getCurrentCode()}</pre>
+              {/* Two-way Pipeline Architecture diagram */}
+              <div className="sleek-glass p-5 rounded-2xl border border-slate-800 space-y-3">
+                <h4 className="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+                  <ArrowLeftRight className="h-4 w-4 text-indigo-400" />
+                  Two-Way Non-Blocking Pipeline Architecture
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px] text-slate-300">
+                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                    <strong className="text-cyan-300 flex items-center gap-1.5">
+                      <Send className="h-3 w-3" /> Direction 1: React Web → Revit 2027
+                    </strong>
+                    <p className="text-slate-400">
+                      1. React sends POST payload to <code>http://localhost:8080/</code>.
+                      <br />
+                      2. Background <code>HttpListener</code> receives payload asynchronously.
+                      <br />
+                      3. Queued to Revit main thread via native <code>IExternalEventHandler</code>.
+                      <br />
+                      4. Revit <strong>Status Notice Bar</strong> displays change notice in real-time!
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                    <strong className="text-emerald-300 flex items-center gap-1.5">
+                      <Radio className="h-3 w-3" /> Direction 2: Revit 2027 → React Web
+                    </strong>
+                    <p className="text-slate-400">
+                      1. User clicks <strong>Push Data to React</strong> button on Revit ribbon.
+                      <br />
+                      2. Add-in harvests DirectShape/Mass footprints & areas.
+                      <br />
+                      3. Non-blocking HTTP POST streams to Express cache.
+                      <br />
+                      4. React polling updates layout blocks & recalculates Markowitz frontier!
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
+
+          {/* OTHER CODE TABS (PURE JS, JSON, DYNAMO) */}
+          {activeTab !== 'live_sync' && (
+            <div className="h-full flex flex-col sleek-glass rounded-xl border border-slate-800 overflow-hidden">
+              <div className="px-3 py-2 bg-slate-950/90 border-b border-slate-800/80 flex items-center justify-between">
+                <span className="font-mono text-xs font-bold text-slate-200">
+                  {getCurrentFilename()}
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleCopy}
+                    className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                  >
+                    {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
+                    <span>{copied ? 'Copied' : 'Copy'}</span>
+                  </button>
+                </div>
+              </div>
+              <pre className="flex-1 p-3.5 bg-slate-950/80 font-mono text-[11px] text-slate-300 overflow-auto leading-relaxed selection:bg-amber-500 selection:text-white">
+                {getCurrentCode()}
+              </pre>
+            </div>
+          )}
+
         </div>
       </div>
     </div>

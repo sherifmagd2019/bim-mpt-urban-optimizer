@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
   <AddIn Type="Application">
-    <Name>Generative BIM Portfolio Optimizer</Name>
-    <Assembly>./RevitMPTOptimizer.dll</Assembly>
-    <AddInId>7C2E4F1A-9B3D-4E6C-8A1F-2D5C6B7E9F10</AddInId>
-    <FullClassName>RevitMPTOptimizer.App</FullClassName>
-    <VendorId>SAM</VendorId>
-    <VendorDescription>Sherif Ahmad Magdaldin — ICICPE 2026</VendorDescription>
+    <Name>Revit MPT Generative Urban Optimizer</Name>
+    <Assembly>RevitMptOptimizer.dll</Assembly>
+    <AddInId>7F4B03B1-9685-4DC3-8DA3-E68F0D68F231</AddInId>
+    <FullClassName>RevitMptOptimizer.Application</FullClassName>
+    <VendorId>MAGDALDIN</VendorId>
+    <VendorDescription>Sherif Ahmad Magdaldin - Modern Portfolio Theory in Generative Urban BIM (ICEPE 2026)</VendorDescription>
   </AddIn>
 </RevitAddIns>

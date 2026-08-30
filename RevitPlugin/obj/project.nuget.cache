@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0ae3F0LOOmA=",
+  "dgSpecHash": "BoeF6vMVZ9c=",
   "success": true,
-  "projectFilePath": "J:\\WorldQuant  FM\\PAPAER\\CSharp Application\\RevitMPTOptimizer\\RevitMPTOptimizer.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\Sherif\\.nuget\\packages\\autodesk.revit.sdk\\2026.0.0.9999\\autodesk.revit.sdk.2026.0.0.9999.nupkg.sha512",
-    "C:\\Users\\Sherif\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.30\\microsoft.windowsdesktop.app.ref.8.0.30.nupkg.sha512",
-    "C:\\Users\\Sherif\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.30\\microsoft.netcore.app.ref.8.0.30.nupkg.sha512",
-    "C:\\Users\\Sherif\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.30\\microsoft.aspnetcore.app.ref.8.0.30.nupkg.sha512"
-  ],
+  "projectFilePath": "J:\\WorldQuant  FM\\PAPAER\\CSharp Application\\forge-ai (17)\\src\\revit-addin\\RevitMptOptimizer.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

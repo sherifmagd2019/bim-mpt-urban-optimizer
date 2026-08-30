@@ -1,6 +1,7 @@
 import React from 'react';
-import { X, FileSpreadsheet, TrendingUp, ShieldAlert, Sparkles } from 'lucide-react';
+import { X, FileSpreadsheet, TrendingUp, ShieldAlert, Sparkles, Download, FileText } from 'lucide-react';
 import { PAPER_TABLE_1_PRESETS } from '../lib/mptMath';
+import { generateAndDownloadPaperPDF } from '../lib/pdfGenerator';
 
 export const ScenarioComparisonModal = ({
   isOpen,
@@ -14,31 +15,47 @@ export const ScenarioComparisonModal = ({
     <div id="scenario-comparison-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
       <div className="sleek-glass border border-slate-700/80 rounded-2xl w-full max-w-5xl max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Modal Header */}
-        <div className="p-4 bg-slate-950/80 border-b border-slate-800/80 flex items-center justify-between">
+        <div className="p-4 bg-slate-950/90 border-b border-slate-800/80 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="h-9 w-9 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center">
+            <div className="h-9 w-9 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shadow-md shadow-indigo-500/10">
               <FileSpreadsheet className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                Table 1 Simulation Analytics: Portfolio Optimization Variations
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 font-semibold">
-                  Empirical Benchmark Matrix
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-indigo-600 to-purple-600 text-white border border-indigo-400/40">
+                  ICEPE 2026 Paper
                 </span>
+                <span className="text-[11px] font-bold text-amber-300">
+                  Sherif Ahmad Magdaldin
+                </span>
+              </div>
+              <h3 className="text-sm font-bold text-white flex items-center gap-2 mt-0.5">
+                Table 1 Benchmark Matrix: Portfolio Optimization Variations
               </h3>
               <p className="text-xs text-slate-400">
-                Comparative analysis of architectural footprints, expected yield (μ_p), volatility (σ_p), and Sharpe Ratio (R_f = 2%)
+                "Modern Portfolio Theory in Generative Urban BIM Layouts" — Empirical comparative analysis of architectural footprints, expected yield (μ_p), volatility (σ_p), and Sharpe Ratio (R_f = 2%)
               </p>
             </div>
           </div>
 
-          <button
-            id="close-comparison-modal-btn"
-            onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              id="table1-btn-download-pdf"
+              onClick={generateAndDownloadPaperPDF}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30 border border-indigo-400/40 transition-all cursor-pointer flex items-center gap-1.5"
+              title="Download 3-page research paper PDF"
+            >
+              <Download className="h-3.5 w-3.5 text-amber-300" />
+              <span>Download PDF Paper</span>
+            </button>
+            <button
+              id="close-comparison-modal-btn"
+              onClick={onClose}
+              className="p-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {/* Modal Content / Comparison Table */}

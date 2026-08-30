@@ -1,67 +1,54 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--
-      Revit 2025+ runs on .NET 8; Revit 2022-2024 run on .NET Framework 4.8.
-      Set RevitVersion below and switch TargetFramework accordingly.
-    -->
-    <RevitVersion>2026</RevitVersion>
-    <TargetFramework Condition="'$(RevitVersion)'&gt;='2026'">net8.0-windows</TargetFramework>
-    <TargetFramework Condition="'$(RevitVersion)'&lt;'2026'">net48</TargetFramework>
-
+    <!-- Autodesk Revit 2027 uses .NET 10.0 runtime (System.Runtime 10.0.0.0) in Visual Studio 2026 -->
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <OutputType>Library</OutputType>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release</Configurations>
+    <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
-    <PlatformTarget>x64</PlatformTarget>
-    <AssemblyName>RevitMPTOptimizer</AssemblyName>
-    <RootNamespace>RevitMPTOptimizer</RootNamespace>
-
-    <!-- Don't copy Revit's own assemblies into our output folder -->
-    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <AssemblyName>RevitMptOptimizer</AssemblyName>
+    <RootNamespace>RevitMptOptimizer</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!-- Suppress assembly version mismatch warnings when referencing Revit 2027 assemblies -->
+    <NoWarn>$(NoWarn);CS1705;NU1603</NoWarn>
   </PropertyGroup>
 
-  <!--
-    Point this at your local Revit installation. Defaults to the standard
-    Program Files location for the selected RevitVersion; override with
-    an environment variable or edit directly if your install path differs.
-  -->
-  <PropertyGroup>
-    <RevitInstallDir Condition="'$(RevitInstallDir)'==''">C:\Program Files\Autodesk\Revit $(RevitVersion)</RevitInstallDir>
-  </PropertyGroup>
-
-  <PropertyGroup>
-		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-		<EnableDefaultPageItems>false</EnableDefaultPageItems>
-  </PropertyGroup>	
-
-  <ItemGroup>
+  <!-- Pure Native Autodesk Revit 2027 API References (Zero External NuGet Dependencies) -->
+  <ItemGroup Condition="Exists('G:\Program Files\Autodesk\Revit 2027\RevitAPI.dll')">
     <Reference Include="RevitAPI">
-      <HintPath>$(RevitInstallDir)\RevitAPI.dll</HintPath>
-      <Private>false</Private>
+      <HintPath>G:\Program Files\Autodesk\Revit 2027\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>$(RevitInstallDir)\RevitAPIUI.dll</HintPath>
-      <Private>false</Private>
+      <HintPath>G:\Program Files\Autodesk\Revit 2027\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="Exists('C:\Program Files\Autodesk\Revit 2027\RevitAPI.dll') And !Exists('G:\Program Files\Autodesk\Revit 2027\RevitAPI.dll')">
+    <Reference Include="RevitAPI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2027\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>C:\Program Files\Autodesk\Revit 2027\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="src\**\*.cs" />
-    <Page Include="src\**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
-  </ItemGroup>
-
-  <!-- Copy the .addin manifest and icon next to the build output for easy local testing -->
-  <ItemGroup>
-    <None Include="RevitMPTOptimizer.addin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\icon32.png" Condition="Exists('Resources\icon32.png')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Autodesk.Revit.SDK" Version="2026.0.0.9999" />
-  </ItemGroup>
+  <!-- Copy Add-in Manifest & Output DLL to %APPDATA%\Autodesk\Revit\Addins\2027 on Build -->
+  <Target Name="DeployAddin" AfterTargets="Build">
+    <ItemGroup>
+      <AddinFiles Include="$(TargetDir)$(TargetName).*" />
+      <AddinManifest Include="RevitMptOptimizer.addin" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AddinManifest)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2027\" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(AddinFiles)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2027\" SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

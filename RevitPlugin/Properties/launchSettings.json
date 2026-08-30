@@ -1,8 +1,14 @@
 {
   "profiles": {
-    "Profile 1": {
+    "Revit 2027 (G: Drive)": {
       "commandName": "Executable",
-      "executablePath": "G:\\Program Files\\Autodesk\\Revit 2027\\Revit.exe"
+      "executablePath": "G:\\Program Files\\Autodesk\\Revit 2027\\Revit.exe",
+      "workingDirectory": "G:\\Program Files\\Autodesk\\Revit 2027"
+    },
+    "Revit 2027 (C: Drive)": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Autodesk\\Revit 2027\\Revit.exe",
+      "workingDirectory": "C:\\Program Files\\Autodesk\\Revit 2027"
     }
   }
 }

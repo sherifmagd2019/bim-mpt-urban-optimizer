@@ -8,6 +8,7 @@ import { AiAgentPanel } from './components/AiAgentPanel';
 import { RevitExportModal } from './components/RevitExportModal';
 import { ScenarioComparisonModal } from './components/ScenarioComparisonModal';
 import { CsvExportModal } from './components/CsvExportModal';
+import { ResearchPaperModal } from './components/ResearchPaperModal';
 import { useRevitLiveSync } from './hooks/useRevitLiveSync';
 import { useHistoryStack } from './hooks/useHistoryStack';
 import { 
@@ -18,13 +19,19 @@ import {
   computeSharpeRatio, 
   buildCovarianceMatrix 
 } from './lib/mptMath';
+import { generateAndDownloadPaperPDF } from './lib/pdfGenerator';
 import { 
   Sparkles, 
   Building2, 
   Activity, 
   ShieldCheck, 
   CheckCircle2, 
-  FileCode2 
+  FileCode2,
+  BookOpen,
+  GraduationCap,
+  Award,
+  Download,
+  FileText
 } from 'lucide-react';
 
 function redistributeFootprint(currentAssets, assetId, newValue, siteArea = 17000) {
@@ -83,6 +90,7 @@ export default function App() {
   const [isRevitModalOpen, setIsRevitModalOpen] = useState(false);
   const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false);
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
+  const [isPaperModalOpen, setIsPaperModalOpen] = useState(false);
 
   // State Management History Stack (Undo / Redo / Snapshots)
   const {
@@ -152,13 +160,71 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleUndo, handleRedo]);
 
-  // Revit 2027 Live Background Polling and Webhook Sync
+  // Inbound Telemetry Handler: Receives live zoning blocks from Revit DocumentChanged event
+  const handleIncomingRevitState = useCallback((revitPayload) => {
+    if (!revitPayload || !Array.isArray(revitPayload.layoutBlocks) || revitPayload.layoutBlocks.length === 0) {
+      return;
+    }
+
+    const blocks = revitPayload.layoutBlocks;
+    const footprintByCode = {};
+
+    blocks.forEach((block) => {
+      const code = (block.assetCode || block.code || '').toUpperCase();
+      const fp = Number(block.footprintM2 ?? block.areaM2 ?? block.area ?? 0);
+      if (code) {
+        footprintByCode[code] = (footprintByCode[code] || 0) + fp;
+      }
+    });
+
+    setAssets((prevAssets) => {
+      const updatedAssets = prevAssets.map((asset) => {
+        const code = asset.code.toUpperCase();
+        if (footprintByCode[code] !== undefined) {
+          return {
+            ...asset,
+            footprintM2: Math.max(0, Math.round(footprintByCode[code]))
+          };
+        }
+        return asset;
+      });
+
+      const newTotal = updatedAssets.reduce((sum, a) => sum + a.footprintM2, 0);
+      const effectiveSiteArea = newTotal > 0 ? newTotal : totalSiteArea;
+      if (newTotal > 0) {
+        setTotalSiteArea(newTotal);
+      }
+
+      const updatedScenario = {
+        ...currentScenario,
+        id: 'revit-live-synced',
+        name: 'Revit 2027 Inbound Model',
+        description: `Imported via DocumentChanged webhook (${blocks.length} elements, ${newTotal.toLocaleString()} m²)`
+      };
+      setCurrentScenario(updatedScenario);
+
+      // Record snapshot to history stack for full undo/redo capability
+      recordSnapshot({
+        assets: updatedAssets,
+        correlationMatrix,
+        covarianceRegime,
+        targetRisk,
+        scenario: updatedScenario,
+        totalSiteArea: effectiveSiteArea
+      }, `Inbound Revit 2027 Sync (${blocks.length} Blocks)`, 'revit');
+
+      return updatedAssets;
+    });
+  }, [totalSiteArea, currentScenario, correlationMatrix, covarianceRegime, targetRisk, recordSnapshot]);
+
+  // Revit 2027 Live Bidirectional Background Polling and Webhook Sync
   const {
     syncState: revitSyncState,
     checkRevitConnection,
     pushPayloadToRevit,
-    updateEndpointUrl
-  } = useRevitLiveSync();
+    updateEndpointUrl,
+    simulateIncomingRevitChange
+  } = useRevitLiveSync(undefined, handleIncomingRevitState);
 
   // AI Agent state
   const [isLoadingAgent, setIsLoadingAgent] = useState(false);
@@ -166,9 +232,10 @@ export default function App() {
     {
       id: 'welcome-msg',
       role: 'assistant',
-      content: `### Quantitative BIM MPT Optimization Active (JavaScript Engine)\n\nI am your autonomous quantitative co-pilot integrating **Harry Markowitz's Modern Portfolio Theory (MPT)** with **Autodesk Revit BIM generative workflows**, based on the research by **Sherif Ahmad Magdaldin** (*WorldQuant University*).\n\n- **Active Layout**: **${currentScenario.name}**\n- **Objective**: Minimize portfolio variance $\\min_w \\sigma_p^2 = w^T \\Sigma w$ while optimizing spatial rental yields.\n- **Published Tangency Sharpe Ratio (Table 1)**: **${currentScenario.sharpeRatio.toFixed(3)}** — the maximum achievable for this regime; the live KPI cards above show the Sharpe of the currently instantiated design, which may differ if it isn't sitting exactly at the tangency point.\n- **State Management**: Undo/Redo history stack active for correlation matrix & parcel weights.\n\nYou can modify parcel footprints, test correlation shocks, or trigger full portfolio rebalancing along the continuous Efficient Frontier.`,
+      content: `### ICEPE 2026 Research Implementation Active\n\nI am your autonomous quantitative co-pilot for the **ICEPE 2026** research paper:  \n# **"Modern Portfolio Theory in Generative Urban BIM Layouts"**  \n### By **Sherif Ahmad Magdaldin**\n\n- **Research Core**: Integrating **Harry Markowitz's Modern Portfolio Theory (MPT)** with **Autodesk Revit 2027 BIM generative workflows**.\n- **Active Layout**: **${currentScenario.name}**\n- **Objective Function**: Minimize portfolio variance $\\min_w \\sigma_p^2 = w^T \\Sigma w$ subject to expected yield constraints and architectural feasibility.\n- **Published Benchmark (Table 1)**: Tangency Sharpe Ratio **${currentScenario.sharpeRatio.toFixed(3)}** under low-covariance asset regime.\n- **Live State Stack**: Real-time undo/redo history active for correlation matrix & parcel weights.\n\nYou can interact with zoning footprints, simulate correlation shocks, or trigger full portfolio rebalancing along the continuous Efficient Frontier.`,
       timestamp: new Date().toLocaleTimeString(),
       reasoningSteps: [
+        'Loaded ICEPE 2026 research mathematical formulation by Sherif Ahmad Magdaldin.',
         'Initialized pure JavaScript linear algebra backend solver.',
         'Extracted parametric BIM zoning footprints (Residential, Commercial, Industrial).',
         'Solved Markowitz analytical frontier hyperbola (Table 1 Low-Corr benchmark active).',
@@ -561,6 +628,7 @@ export default function App() {
         onOpenRevitCode={() => setIsRevitModalOpen(true)}
         onOpenScenarioComparison={() => setIsComparisonModalOpen(true)}
         onOpenCsvExport={() => setIsCsvModalOpen(true)}
+        onOpenPaperModal={() => setIsPaperModalOpen(true)}
         activeViewTab={activeViewTab}
         setActiveViewTab={setActiveViewTab}
         revitSyncState={revitSyncState}
@@ -855,7 +923,48 @@ export default function App() {
         )}
       </main>
 
+      {/* ICEPE 2026 Academic Research Footer */}
+      <footer className="mt-12 border-t border-slate-800/80 bg-slate-950/80 py-6 px-4 lg:px-8 text-xs text-slate-400">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
+            <span className="px-2.5 py-1 rounded bg-indigo-950 text-indigo-300 font-black tracking-wider border border-indigo-800/60 uppercase text-[10px]">
+              ICEPE 2026
+            </span>
+            <span>
+              <strong className="text-slate-200">Modern Portfolio Theory in Generative Urban BIM Layouts</strong> — Authored by <strong className="text-amber-300 font-semibold">Sherif Ahmad Magdaldin</strong>
+            </span>
+          </div>
+          <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium">
+            <button
+              id="footer-btn-download-pdf"
+              onClick={generateAndDownloadPaperPDF}
+              className="text-indigo-400 hover:text-indigo-300 underline font-semibold cursor-pointer flex items-center gap-1"
+            >
+              <Download className="h-3 w-3" />
+              Download PDF Paper
+            </button>
+            <span>•</span>
+            <button
+              id="footer-btn-read-paper"
+              onClick={() => setIsPaperModalOpen(true)}
+              className="text-slate-300 hover:text-white underline cursor-pointer"
+            >
+              Read Paper
+            </button>
+            <span>•</span>
+            <span>Table 1 Benchmarks</span>
+            <span>•</span>
+            <span>Revit 2027 C# Bridge</span>
+          </div>
+        </div>
+      </footer>
+
       {/* Modals */}
+      <ResearchPaperModal
+        isOpen={isPaperModalOpen}
+        onClose={() => setIsPaperModalOpen(false)}
+      />
+
       <RevitExportModal
         isOpen={isRevitModalOpen}
         onClose={() => setIsRevitModalOpen(false)}
@@ -873,6 +982,7 @@ export default function App() {
         onTriggerLiveSync={pushPayloadToRevit}
         onPingRevit={checkRevitConnection}
         onUpdateEndpoint={updateEndpointUrl}
+        onSimulateIncomingRevitChange={simulateIncomingRevitChange}
       />
 
       <ScenarioComparisonModal
