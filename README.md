@@ -30,23 +30,6 @@ The platform provides a highly visual, interactive web workspace containing:
 3. **Generative BIM 3D Isometric Viewer**: A parametric grid rendering real-time spatial configurations that I can manipulate instantly..
 4. **Quant AI Agent Panel**: An integrated conversational terminal running Gemini with explicit tool execution logic.
 
-## 🧠 How I built it
-## 💡 Inspiration
-Generative Urban Design and Building Information Modeling (BIM) traditionally focus entirely on physical geometries, solar values, or generic zoning footprints. They treat building zones as isolated silos, ignoring real-world volatile market factors such as varying occupancy elasticities, financial absorption velocities, and localized rental yield risks. 
-
-I was inspired by my own quantitative thesis work as an MScFE candidate at WorldQuant University. I realized that I could treat generative urban spatial distributions exactly like financial stock assets in a portfolio. By applying Harry Markowitz’s Modern Portfolio Theory (MPT), an architect could computationally balance competing spatial elements—minimizing macroeconomic covariance risk while maximizing the urban yield envelope.
-
-## 🚀 What it does
-BIM MPT Urban Optimizer AI Agent is a complete, full-stack, autonomous architectural financial engineering co-pilot. It allows developers and master-planners to test zoning layouts, execute macro correlation shocks, and dynamically stream the mathematically optimal configuration directly into Autodesk Revit 2027.
-
-The system runs as two connected components: a **cloud-hosted React/Express web application** (deployed on Google Cloud Run) providing the optimization workspace and AI co-pilot, and a **local Autodesk Revit 2027 C# add-in** that receives live data from the cloud via a bridge server and materializes the optimized zoning directly into the BIM model.
-
-The platform provides a highly visual, interactive web workspace containing:
-1. **Interactive Correlation Matrix Heatmap**: Modulate cross-asset dependencies (e.g., how Residential performance correlates to Commercial demand during economic cycles) to re-evaluate the risk boundaries.
-2. **Markowitz Efficient Frontier Curve**: A visual interface charting the exact boundary hyperbola where no higher architectural yield can be attained for a given volatility risk level.
-3. **Generative BIM 3D Isometric Viewer**: A parametric grid rendering real-time spatial configurations that I can manipulate instantly..
-4. **Quant AI Agent Panel**: An integrated conversational terminal running Gemini with explicit tool execution logic.
-
 ## 🏗️ How I Built It & Infrastructure Configurations
 
 As a solo developer, I built this cross-platform solution using a multi-tier, real-time architecture:
