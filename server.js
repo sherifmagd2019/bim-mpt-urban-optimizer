@@ -342,7 +342,7 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`BIM MPT Urban Optimizer server running on http://localhost:${PORT}`);
+    console.log(`BIM MPT Urban Optimizer server running on port ${PORT}`);
   });
 }
 
