@@ -10,7 +10,7 @@
 * **Direct Proxy Mirror Domain:** [https://mptoptimizer.ai.studio/](https://mptoptimizer.ai.studio/)
 * **Video Demo Walkthrough:**  https://youtu.be/XDtnisw5jh0)
 * **Devpost Submission:** [https://devpost.com/software/bim-mpt-urban-optimize](https://devpost.com/software/bim-mpt-urban-optimize)
-* **Academic Foundation: Inspired by research presented at ICEPE 2026 ("Modern 
+* **Academic Foundation:** Inspired by research presented at ICEPE 2026 ("Modern 
     Portfolio Theory in Generative Urban BIM Layouts"). This hackathon submission 
     implements the theoretical framework as a production-grade autonomous AI agent 
     with Gemini function calling, multi-step workflow automation, and live Revit 
