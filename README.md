@@ -8,9 +8,13 @@
 * **GitHub Repository:** [https://github.com/sherifmagd2019/bim-mpt-urban-optimizer](https://github.com/sherifmagd2019/bim-mpt-urban-optimizer)
 * **Live App Demo (Vercel):** [https://bim-mpt-urban-optimizer-60r66r1lx-sherifmagd2019s-projects.vercel.app/](https://bim-mpt-urban-optimizer-60r66r1lx-sherifmagd2019s-projects.vercel.app/)
 * **Direct Proxy Mirror Domain:** [https://mptoptimizer.ai.studio/](https://mptoptimizer.ai.studio/)
-* **Video Demo Walkthrough:** [https://youtu.be/UzotNl5gPK0]  https://youtu.be/XDtnisw5jh0)
+* **Video Demo Walkthrough:**  https://youtu.be/XDtnisw5jh0)
 * **Devpost Submission:** [https://devpost.com/software/bim-mpt-urban-optimize](https://devpost.com/software/bim-mpt-urban-optimize)
-* **Academic Context:** Prepared for presentation at the **ICEPE 2026** conference.
+* **Academic Foundation: Inspired by research presented at ICEPE 2026 ("Modern 
+    Portfolio Theory in Generative Urban BIM Layouts"). This hackathon submission 
+    implements the theoretical framework as a production-grade autonomous AI agent 
+    with Gemini function calling, multi-step workflow automation, and live Revit 
+    synchronization—entirely newly developed during the hackathon period.
 
 ---
 
